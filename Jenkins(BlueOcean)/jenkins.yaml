@@ -1,0 +1,90 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  labels:
+    app: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      volumes:
+        - name: my-jenkins-volume
+          persistentVolumeClaim:
+            claimName: jenkins-pvc
+      # This is need to fix 'Wrong volume permissions?' when Jenkins mounted to a Kube Volume
+      securityContext:
+        fsGroup: 1000 
+        runAsUser: 0      
+      containers:
+      - name: dind
+        image: docker:dind
+        ports:
+        securityContext:
+          privileged: true
+        env:
+        - name: DOCKER_TLS_CERTDIR
+          value: "/certs"
+        volumeMounts:
+            # Jenkins and DIND certs
+          - mountPath: "/certs/client"
+            subPath: "jenkins-docker-certs"
+            name: my-jenkins-volume
+            # Jenkins App Data
+          - mountPath: "/var/jenkins_home"
+            subPath: "jenkins-data"
+            name: my-jenkins-volume
+
+      - name: jenkins
+        image: kaivalya461/myjenkins-blueocean-macos:latest
+        # image: kaivalya461/myjenkins-blueocean:latest #For Windows HOST
+        volumeMounts:
+            # Jenkins and DIND certs        
+          - mountPath: "/certs/client"
+            subPath: "jenkins-docker-certs"
+            name: my-jenkins-volume
+            readOnly: true
+            # Jenkins App Data
+          - mountPath: "/var/jenkins_home"
+            subPath: "jenkins-data"
+            name: my-jenkins-volume
+        env:
+        # Required if DIND is running in different network
+        # - name: DOCKER_HOST
+        #   value: "tcp://docker:2376"
+        - name: DOCKER_CERT_PATH
+          value: "/certs/client"
+        - name: DOCKER_TLS_VERIFY
+          value: "1"
+        ports:
+        # - containerPort: 8080
+      
+
+
+---
+#Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+spec:
+  selector:
+    app: jenkins
+  type: LoadBalancer  
+  ports:
+    - name: jenkins
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+      # nodePort: 30030
+    - name: dind
+      protocol: TCP
+      port: 2376
+      targetPort: 2376
