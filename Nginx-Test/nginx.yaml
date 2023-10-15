@@ -18,6 +18,8 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
+      ports:
+      #   containerPort: 80
         
 ---
 #Service
@@ -33,5 +35,5 @@ spec:
     - name: nginx
       protocol: TCP
       port: 8080
-      targetPort: 8080
+      targetPort: 80
       # nodePort: 30030
