@@ -1,0 +1,37 @@
+#Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-test
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        
+---
+#Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  type: LoadBalancer  
+  ports:
+    - name: nginx
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+      # nodePort: 30030
