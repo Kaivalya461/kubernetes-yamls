@@ -3,6 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgresdb-pvc
+  namespace: kv-dbapps
 spec:
   storageClassName: postgresdb-data
   accessModes:
@@ -20,6 +21,7 @@ metadata:
   name: postgresdb-deployment
   labels:
     app: postgresdb
+  namespace: kv-dbapps
 spec:
   replicas: 1
   selector:
@@ -55,6 +57,7 @@ metadata:
   name: postgresdb-service
   labels:
     app: postgresdb
+  namespace: kv-dbapps
 spec:
   selector:
     app: postgresdb

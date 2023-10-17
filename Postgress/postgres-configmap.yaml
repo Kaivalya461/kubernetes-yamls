@@ -6,6 +6,7 @@ metadata:
   name: db-credentials
   labels:
     app: postgresdb
+  namespace: kv-dbapps
 data:
   POSTGRES_DB: testDB
   # Db user
