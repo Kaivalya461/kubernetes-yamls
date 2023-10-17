@@ -1,53 +1,67 @@
-#Deployment
+## PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresdb-pvc
+spec:
+  storageClassName: postgresdb-data
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 8Gi
+
+---
+
+## Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-deployment
+  name: postgresdb-deployment
   labels:
-    app: postgres
+    app: postgresdb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app: postgresdb
   template:
     metadata:
       labels:
-        app: postgres
+        app: postgresdb
     spec:
-      volumes:
-        - name: my-postgres-volume
-          persistentVolumeClaim:
-            claimName: postgres-pvc
       containers:
-      - name: postgres
+      - name: postgresdb
         image: postgres
-        imagePullPolicy: Never      
-        env:
-          - name: POSTGRES_PASSWORD
-            value: "changeit"
+        # imagePullPolicy: Never      
+        envFrom:
+          - configMapRef:
+              name: db-credentials
         volumeMounts:
-            #Data Mount for Postgres DB
-          - name: my-postgres-volume
+          - name: my-postgresdb-volume
             subPath: "db-data"
             mountPath: "/var/lib/postgresql/data"
-
-
-      
+      volumes:
+        - name: my-postgresdb-volume
+          persistentVolumeClaim:
+            claimName: postgresdb-pvc
 
 ---
-#Service
+
+## Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-service
+  name: postgresdb-service
+  labels:
+    app: postgresdb
 spec:
   selector:
-    app: postgres
-  type: LoadBalancer  
+    app: postgresdb
+  type: LoadBalancer
   ports:
-    - name: postgres
-      protocol: TCP
+    - name: postgresdb
+      # protocol: TCP
       port: 5432
-      targetPort: 5432
-      # nodePort: 30030        
+      targetPort: 5432 #Container Port
+      # nodePort: 30030      

@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgres-pv
+  name: postgresdb-pv
   labels:
     type: local
 spec:
-  storageClassName: postgres-data
+  storageClassName: postgresdb-data
   capacity:
-    storage: 100Gi
+    storage: 50Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -18,7 +18,7 @@ spec:
 
     # Truenas Dataset
     # /mnt/pool_32_gig/truenas-docker-apps/DockerDataVolume/Postgress
-    path: "/mnt/pool_32_gig/truenas-docker-apps/DockerDataVolume/Postgress"
+    path: "pool_500_860evo/app-data/my-postgres"
 
     # Windows Path
     # path: "F:\\DatabaseStorage\\KubernetesPVData\\postgres-pv"
