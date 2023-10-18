@@ -9,7 +9,7 @@ spec:
   capacity:
     storage: 50Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   hostPath:
     ## Update below path with appropriate host path ##
     
