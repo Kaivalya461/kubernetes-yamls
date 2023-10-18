@@ -18,7 +18,7 @@ spec:
 
     # Truenas Dataset
     # /mnt/pool_32_gig/truenas-docker-apps/DockerDataVolume/Postgress
-    path: "pool_500_860evo/app-data/my-postgres"
+    path: "/mnt/pool_500_860evo/app-data/my-postgres"
 
     # Windows Path
     # path: "F:\\DatabaseStorage\\KubernetesPVData\\postgres-pv"
