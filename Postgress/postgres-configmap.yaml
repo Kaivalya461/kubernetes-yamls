@@ -8,8 +8,8 @@ metadata:
     app: postgresdb
   namespace: kv-dbapps
 data:
-  POSTGRES_DB: testDB
+  # POSTGRES_DB: testDB
   # Db user
-  POSTGRES_USER: testUser
+  # POSTGRES_USER: testUser
   # Db password
-  POSTGRES_PASSWORD: testPassword
+  POSTGRES_PASSWORD: mysecretpassword
