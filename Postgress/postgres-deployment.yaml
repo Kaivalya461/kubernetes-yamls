@@ -45,7 +45,7 @@ metadata:
 spec:
   selector:
     app: postgresdb
-  type: LoadBalancer
+  # type: LoadBalancer
   ports:
     - name: postgresdb
       # protocol: TCP
