@@ -1,0 +1,13 @@
+## PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresdb-pvc
+  namespace: kv-dbapps
+spec:
+  storageClassName: postgresdb-data
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi

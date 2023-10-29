@@ -1,0 +1,15 @@
+## ConfigMap
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-credentials
+  labels:
+    app: postgresdb
+  namespace: kv-dbapps
+data:
+  # POSTGRES_DB: testDB
+  # Db user
+  # POSTGRES_USER: testUser
+  # Db password
+  POSTGRES_PASSWORD: mysecretpassword

@@ -1,0 +1,54 @@
+## Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresdb-deployment
+  labels:
+    app: postgresdb
+  namespace: kv-dbapps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresdb
+  template:
+    metadata:
+      labels:
+        app: postgresdb
+    spec:
+      containers:
+      - name: postgresdb
+        image: postgres
+        # imagePullPolicy: Never      
+        envFrom:
+          - configMapRef:
+              name: db-credentials
+        volumeMounts:
+          - name: my-postgresdb-volume
+            subPath: "db-data"
+            mountPath: "/var/lib/postgresql/data"
+      volumes:
+        - name: my-postgresdb-volume
+          persistentVolumeClaim:
+            claimName: postgresdb-pvc
+
+---
+
+## Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresdb-service
+  labels:
+    app: postgresdb
+  namespace: kv-dbapps
+spec:
+  selector:
+    app: postgresdb
+  type: LoadBalancer
+  ports:
+    - name: postgresdb
+      # protocol: TCP
+      port: 5432
+      targetPort: 5432 #Container Port
+      # nodePort: 30030      
