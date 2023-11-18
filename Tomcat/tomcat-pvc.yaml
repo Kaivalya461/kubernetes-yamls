@@ -1,0 +1,13 @@
+## PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tomcat-pvc
+  namespace: kv-frontend-apps
+spec:
+  storageClassName: tomcat-data
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi

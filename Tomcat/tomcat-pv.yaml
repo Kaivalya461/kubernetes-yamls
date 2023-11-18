@@ -1,0 +1,24 @@
+## PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tomcat-pv
+  labels:
+    type: local
+spec:
+  storageClassName: tomcat-data
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    ## Update below path with appropriate host path ##
+    
+    # Linux Path
+    # path: "/home/pvtest"
+
+    # Truenas Dataset
+    path: "/mnt/pool_500_860evo/app-data/tomcat-server"
+
+    # Windows Path
+    # path: "F:\\DatabaseStorage\\KubernetesPVData\\postgres-pv"
