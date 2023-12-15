@@ -13,3 +13,7 @@ Step 3 - Create Kubernetes PVC
 Step 4 - Run Kubernetes Deployment and Services jobs
 Note: jenkins yaml file contains both deployment and service configuration.
 -> kubectl apply -f jenkins.yaml
+
+Initial Jenkins Configuration
+1. Add Maven Tool in Jenkins Global Tools.
+2. Add DockerHud Creds in Jenkins Global Credentials for pushing Docker images.

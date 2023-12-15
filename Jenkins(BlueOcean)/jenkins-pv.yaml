@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: docker-apps-volume
+  name: jenkins-pv
   labels:
     type: local
 spec:
-  storageClassName: docker-data
+  storageClassName: jenkins-data
   capacity:
-    storage: 100Gi
+    storage: 50Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   hostPath:
     # Update below path with appropriate host path
-    path: "/home/pvtest"
+    path: "/mnt/pool_500_860evo/app-data/jenkins-app"
     # Truenas Dataset
     # /mnt/pool_32_gig/truenas-docker-apps/DockerDataVolume

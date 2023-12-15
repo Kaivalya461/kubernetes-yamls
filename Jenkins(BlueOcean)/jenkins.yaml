@@ -5,6 +5,7 @@ metadata:
   name: jenkins-deployment
   labels:
     app: jenkins
+  namespace: kv-devops-tools
 spec:
   replicas: 1
   selector:
@@ -20,9 +21,9 @@ spec:
           persistentVolumeClaim:
             claimName: jenkins-pvc
       # This is need to fix 'Wrong volume permissions?' when Jenkins mounted to a Kube Volume
-      securityContext:
-        fsGroup: 1000 
-        runAsUser: 0      
+      # securityContext:
+      #   fsGroup: 1000 
+      #   runAsUser: 0      
       containers:
       - name: dind
         image: docker:dind
@@ -37,14 +38,10 @@ spec:
           - mountPath: "/certs/client"
             subPath: "jenkins-docker-certs"
             name: my-jenkins-volume
-            # Jenkins App Data
-          - mountPath: "/var/jenkins_home"
-            subPath: "jenkins-data"
-            name: my-jenkins-volume
-
       - name: jenkins
-        image: kaivalya461/myjenkins-blueocean-macos:latest
+        image: kaivalya461/myjenkins-blueocean-truenas:latest
         # image: kaivalya461/myjenkins-blueocean:latest #For Windows HOST
+        # kaivalya461/myjenkins-blueocean-truenas:latest #For Truenas HOST
         volumeMounts:
             # Jenkins and DIND certs        
           - mountPath: "/certs/client"
@@ -63,9 +60,9 @@ spec:
           value: "/certs/client"
         - name: DOCKER_TLS_VERIFY
           value: "1"
-        ports:
+        # ports:
         # - containerPort: 8080
-      
+
 
 
 ---
@@ -74,10 +71,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: jenkins-service
+  namespace: kv-devops-tools
 spec:
   selector:
     app: jenkins
-  type: LoadBalancer  
+  # type: LoadBalancer  
   ports:
     - name: jenkins
       protocol: TCP
