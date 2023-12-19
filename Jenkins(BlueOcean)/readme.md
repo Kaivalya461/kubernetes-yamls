@@ -17,3 +17,4 @@ Note: jenkins yaml file contains both deployment and service configuration.
 Initial Jenkins Configuration
 1. Add Maven Tool in Jenkins Global Tools.
 2. Add DockerHud Creds in Jenkins Global Credentials for pushing Docker images.
+3. Configure JDK with Private CA as Trusted Authorities... i.e. update cacerts in jdk
