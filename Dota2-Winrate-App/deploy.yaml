@@ -1,0 +1,47 @@
+## Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kv-backend-apps
+
+---
+## Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dota2-winrate-deployment
+  labels:
+    app: dota2-winrate
+  namespace: kv-backend-apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dota2-winrate
+  template:
+    metadata:
+      labels:
+        app: dota2-winrate
+    spec:
+      containers:
+      - name: dota2-winrate
+        image: kaivalya461/dota2-winrate-app
+        # envFrom:
+        # - secretRef:
+        #     name: config-server-secret
+---
+## Service       
+apiVersion: v1
+kind: Service
+metadata:
+  name: dota2-winrate-service
+  namespace: kv-backend-apps
+spec:
+  selector:
+    app: dota2-winrate
+  # type: LoadBalancer
+  ports:
+    - name: dota2-winrate
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
