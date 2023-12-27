@@ -53,7 +53,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
   name: dota2-winrate-ingress
   namespace: kv-backend-apps
 spec:
@@ -62,10 +62,10 @@ spec:
   - host: kvhome.in
     http:
       paths:
-      - pathType: ImplementationSpecific
-        path: /nginx(/|$)(.*)
+      - pathType: Prefix
+        path: /nginx/dota2-winrate(/|$)(.*)
         backend:
           service:
-            name: config-server-service
+            name: dota2-winrate-service
             port:
               number: 8080
