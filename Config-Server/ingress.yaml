@@ -10,7 +10,7 @@ spec:
   - host: config-server.kvhome.in
     http:
       paths:
-      - pathType: Path
+      - pathType: Prefix
         path: /
         backend:
           service:
