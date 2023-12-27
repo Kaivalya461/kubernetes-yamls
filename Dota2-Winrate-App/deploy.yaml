@@ -45,3 +45,27 @@ spec:
       protocol: TCP
       port: 8080
       targetPort: 8080
+
+
+---
+## Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  name: dota2-winrate-ingress
+  namespace: kv-backend-apps
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: kvhome.in
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: /nginx(/|$)(.*)
+        backend:
+          service:
+            name: config-server-service
+            port:
+              number: 8080
