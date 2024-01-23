@@ -1,0 +1,16 @@
+## PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: influxdb-pv
+  labels:
+    type: local
+spec:
+  storageClassName: influxdb-data
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    # Truenas Dataset
+    path: "/mnt/pool_500_860evo/app-data/influxdb-app"

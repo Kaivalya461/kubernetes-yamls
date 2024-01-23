@@ -1,0 +1,88 @@
+## Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb-deployment
+  labels:
+    app: influxdb
+  namespace: kv-dbapps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+      - name: influxdb
+        image: influxdb
+        # envFrom:
+        #   - configMapRef:
+        #       name: db-credentials
+        volumeMounts:
+          - name: my-influxdb-volume
+            subPath: "db-data"
+            mountPath: "/var/lib/influxdb2"
+      volumes:
+        - name: my-influxdb-volume
+          persistentVolumeClaim:
+            claimName: influxdb-pvc
+
+
+---
+## Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb-service
+  labels:
+    app: influxdb
+  namespace: kv-dbapps
+spec:
+  selector:
+    app: influxdb
+  # type: LoadBalancer
+  ports:
+    - name: influxdb
+      port: 8086
+      targetPort: 8086 #Container Port
+      # nodePort: 30030
+
+---
+## PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: influxdb-pvc
+  namespace: kv-dbapps
+spec:
+  storageClassName: influxdb-data
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+
+---
+## Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: influxdb-ingress
+  namespace: kv-dbapps
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: influxdb.np.kvhome.in
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: influxdb-service
+            port:
+              number: 8086
