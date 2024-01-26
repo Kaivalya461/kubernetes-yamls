@@ -1,0 +1,13 @@
+## PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: influxdb-pvc
+  namespace: kv-dbapps
+spec:
+  storageClassName: influxdb-data
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi

@@ -51,20 +51,6 @@ spec:
       targetPort: 8086 #Container Port
       # nodePort: 30030
 
----
-## PVC
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: influxdb-pvc
-  namespace: kv-dbapps
-spec:
-  storageClassName: influxdb-data
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 50Gi
 
 ---
 ## Ingress
