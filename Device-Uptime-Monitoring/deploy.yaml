@@ -1,0 +1,64 @@
+## Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device-uptime-monitoring-deployment
+  labels:
+    app: device-uptime-monitoring
+  namespace: kv-backend-apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: device-uptime-monitoring
+  template:
+    metadata:
+      labels:
+        app: device-uptime-monitoring
+    spec:
+      containers:
+      - name: device-uptime-monitoring
+        image: kaivalya461/device-uptime-monitoring
+        # envFrom:
+        # - secretRef:
+        #     name: config-server-secret
+---
+## Service       
+apiVersion: v1
+kind: Service
+metadata:
+  name: device-uptime-monitoring-service
+  namespace: kv-backend-apps
+spec:
+  selector:
+    app: device-uptime-monitoring
+  # type: LoadBalancer
+  ports:
+    - name: device-uptime-monitoring
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+
+---
+## Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  name: device-uptime-monitoring-ingress
+  namespace: kv-backend-apps
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: kvhome.in
+    http:
+      paths:
+      - pathType: Prefix
+        path: /nginx/device-uptime-monitoring(/|$)(.*)
+        backend:
+          service:
+            name: device-uptime-monitoring-service
+            port:
+              number: 8080
