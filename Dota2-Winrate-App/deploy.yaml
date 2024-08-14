@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: dota2-winrate
-        image: kaivalya461/dota2-winrate-app
+        image: kaivalya461/dota2-winrate-service
         # envFrom:
         # - secretRef:
         #     name: config-server-secret
