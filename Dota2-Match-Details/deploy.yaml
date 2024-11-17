@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dota2-winrate-deployment
+  name: dota2-match-details-deployment
   labels:
-    app: dota2-winrate
+    app: dota2-match-details
   namespace: kv-backend-apps
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dota2-winrate
+      app: dota2-match-details
   template:
     metadata:
       labels:
-        app: dota2-winrate
+        app: dota2-match-details
     spec:
       containers:
-      - name: dota2-winrate
-        image: kaivalya461/dota2-winrate-service
+      - name: dota2-match-details
+        image: kaivalya461/dota2-match-details
         # envFrom:
         # - secretRef:
         #     name: config-server-secret
@@ -27,14 +27,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dota2-winrate-service
+  name: dota2-match-details-service
   namespace: kv-backend-apps
 spec:
   selector:
-    app: dota2-winrate
+    app: dota2-match-details
   # type: LoadBalancer
   ports:
-    - name: dota2-winrate
+    - name: dota2-match-details
       protocol: TCP
       port: 8080
       targetPort: 8080
@@ -47,7 +47,7 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
-  name: dota2-winrate-ingress
+  name: dota2-match-details-ingress
   namespace: kv-backend-apps
 spec:
   ingressClassName: nginx
@@ -56,9 +56,9 @@ spec:
     http:
       paths:
       - pathType: Prefix
-        path: /nginx/dota2-winrate(/|$)(.*)
+        path: /nginx/dota2-match-details(/|$)(.*)
         backend:
           service:
-            name: dota2-winrate-service
+            name: dota2-match-details-service
             port:
               number: 8080
