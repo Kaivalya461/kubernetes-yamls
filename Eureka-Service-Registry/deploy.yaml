@@ -57,5 +57,5 @@ spec:
         backend:
           service:
             name: eureka-service-registry-service
-            # port:
-            #   number: 8761
+            port:
+              number: 80
