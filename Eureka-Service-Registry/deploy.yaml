@@ -35,7 +35,7 @@ spec:
   ports:
     - name: eureka-service-registry
       protocol: TCP
-      port: 8761
+      port: 80
       targetPort: 8761
 
 
@@ -57,5 +57,5 @@ spec:
         backend:
           service:
             name: eureka-service-registry-service
-            port:
-              number: 8761
+            # port:
+            #   number: 8761
