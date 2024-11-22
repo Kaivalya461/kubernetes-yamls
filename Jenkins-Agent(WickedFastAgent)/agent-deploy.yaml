@@ -1,0 +1,74 @@
+## Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wicked-fast-jenkins-agent-deployment
+  labels:
+    app: wicked-fast-jenkins-agent
+  namespace: kv-devops-tools
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wicked-fast-jenkins-agent
+  template:
+    metadata:
+      labels:
+        app: wicked-fast-jenkins-agent
+    spec:
+      volumes:
+        - name: my-agent-volume
+          persistentVolumeClaim:
+            claimName: wicked-fast-jenkins-agent-pvc
+      containers:
+      # DIND Container
+      - name: jenkins-agent-dind
+        image: docker:dind
+        securityContext:
+          privileged: true
+        env:
+        - name: DOCKER_TLS_CERTDIR
+          value: "/certs"
+        volumeMounts:
+            # Jenkins and DIND certs
+          - name: my-agent-volume
+            subPath: "jenkins-docker-certs"
+            mountPath: "/certs/client"
+          - name: my-agent-volume
+            subPath: "docker-sock"
+            mountPath: "/var/run"
+
+      # Jenkins Agent Container
+      - name: wicked-fast-jenkins-agent
+        image: kaivalya461/wicked-fast-jenkins-agent:latest
+        volumeMounts:
+          - name: my-agent-volume
+            subPath: "jenkins-agent-data"
+            mountPath: "/home/jenkins-agent/agent-data"
+          - name: my-agent-volume
+            mountPath: "/var/run"
+            subPath: "docker-sock"
+          - name: my-agent-volume
+            mountPath: "/certs/client"
+            subPath: "jenkins-docker-certs"
+            readOnly: true
+
+
+---
+## Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: wicked-fast-jenkins-agent-service
+  labels:
+    app: wicked-fast-jenkins-agent
+  namespace: kv-devops-tools
+spec:
+  selector:
+    app: wicked-fast-jenkins-agent
+  type: LoadBalancer
+  ports:
+    - name: wicked-fast-jenkins-agent
+      port: 22 #SSH Port
+      targetPort: 22 #Container Port
+      # nodePort: 30030
