@@ -1,0 +1,69 @@
+## Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wikijs-deployment
+  labels:
+    app: wikijs
+  namespace: kv-wikijs-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wikijs
+  template:
+    metadata:
+      labels:
+        app: wikijs
+    spec:
+      containers:
+      - name: wikijs
+        image: requarks/wiki:2.5
+        env:
+          - name: DB_TYPE
+            value: postgres
+          - name: DB_PORT
+            value: "5432"
+        envFrom:
+          - secretRef:
+              ## Passing DB_HOST, DB_NAME, DB_USER, DB_PASS from Secrets
+              name: wikijs-postgres-conn-details
+
+---
+## Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: wikijs-service
+  labels:
+    app: wikijs
+  namespace: kv-wikijs-namespace
+spec:
+  selector:
+    app: wikijs
+  ports:
+    - name: wikijs
+      port: 3000
+      targetPort: 3000 #Container Port
+
+
+---
+## Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wikijs-ingress
+  namespace: kv-wikijs-namespace
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: wiki.kvhome.in
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: wikijs-service
+            port:
+              number: 3000

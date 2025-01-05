@@ -1,0 +1,2 @@
+- WikiJs is used for documenting tools, software and any technical documentations.
+- This Kubernetes Deployment will contain only WikiJs deployment, and requires seperate Database(in my case PostgreSQL)
