@@ -1,0 +1,72 @@
+## Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole-deployment
+  labels:
+    app: pihole
+  namespace: kv-pihole-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pihole
+  template:
+    metadata:
+      labels:
+        app: pihole
+    spec:
+      containers:
+      - name: pihole
+        image: pihole/pihole:2024.07.0
+        env:
+          - name: TZ
+            value: 'Asia/Kolkata'
+          - name: PIHOLE_UID
+            value: 3051
+          - name: PIHOLE_GID
+            value: 568
+        #   - name: WEBPASSWORD
+        #     value: pihole-test-pass
+        envFrom:
+          - secretRef:
+              ## Admin WebPassword from Secrets
+              name: pihole-web-password
+        volumeMounts:
+          - name: my-pihole-volume
+            subPath: "etc-pihole"
+            mountPath: "/etc/pihole"
+          - name:  my-pihole-volume
+            subPath: "etc-dnsmasq.d"
+            mountPath: "/etc/dnsmasq.d"
+      volumes:
+        - name: my-pihole-volume
+          persistentVolumeClaim:
+            claimName: pihole-pvc
+
+---
+## Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-service
+  labels:
+    app: pihole
+  namespace: kv-pihole-namespace
+spec:
+  selector:
+    app: pihole
+  type: LoadBalancer
+  ports:
+    - name: pihole-53tcp
+      port: 53
+      targetPort: 53
+      protocol: TCP
+    - name: pihole-53udp
+      port: 53
+      targetPort: 53
+      protocol: UDP
+    - name: pihole-80tcp
+      port: 80
+      targetPort: 80
+      protocol: TCP

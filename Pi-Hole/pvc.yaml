@@ -1,0 +1,13 @@
+## PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pihole-pvc
+  namespace: kv-pihole-namespace
+spec:
+  storageClassName: pihole-data
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
