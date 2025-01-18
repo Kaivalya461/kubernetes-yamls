@@ -63,6 +63,8 @@ metadata:
   labels:
     app: wicked-fast-jenkins-agent
   namespace: kv-devops-tools
+  # annotations:
+  #   metallb.universe.tf/loadBalancerIPs: 192.168.1.241
 spec:
   selector:
     app: wicked-fast-jenkins-agent
