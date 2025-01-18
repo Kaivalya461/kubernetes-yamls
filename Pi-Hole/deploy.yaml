@@ -23,9 +23,9 @@ spec:
           - name: TZ
             value: "Asia/Kolkata"
           - name: PIHOLE_UID
-            value: 3051
+            value: "3051"
           - name: PIHOLE_GID
-            value: 568
+            value: "568"
         #   - name: WEBPASSWORD
         #     value: pihole-test-pass
         envFrom:
