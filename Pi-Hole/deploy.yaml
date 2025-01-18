@@ -21,7 +21,7 @@ spec:
         image: pihole/pihole:2024.07.0
         env:
           - name: TZ
-            value: 'Asia/Kolkata'
+            value: "Asia/Kolkata"
           - name: PIHOLE_UID
             value: 3051
           - name: PIHOLE_GID
