@@ -19,9 +19,9 @@ spec:
       containers:
       - name: shwish-wish
         image: kaivalya461/shwish-wish
-        # envFrom:
-        # - secretRef:
-        #     name: config-server-secret
+        envFrom:
+        - secretRef:
+            name: kv-content-secret
 ---
 ## Service       
 apiVersion: v1
